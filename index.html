@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fixed Bottom Buttons</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .content {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #333;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .nav-item {
+      text-align: center;
+      color: white;
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .nav-item img {
+      width: 30px; /* ছবির প্রস্থ */
+      height: 30px; /* ছবির উচ্চতা */
+      display: block;
+      margin: 0 auto 5px;
+    }
+
+    .nav-item span {
+      font-size: 14px;
+    }
+
+    /* বাটনের উপর hover করলে কালার চেঞ্জ হবে */
+    .nav-item:hover {
+      color: #f0a500;
+    }
+  </style>
+</head>
+<body>
+  <div class="bottom-nav">
+    <a href="Home.html" class="nav-item">
+      <img src="home-icon.png" alt="Home">
+      <span>Home</span>
+    </a>
+    <a href="earn.html" class="nav-item">
+      <img src="earn-icon.png" alt="Earn">
+      <span>Earn</span>
+    </a>
+    <a href="withdraw.html" class="nav-item">
+      <img src="withdraw-icon.png" alt="Withdraw">
+      <span>Withdraw</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <img src="profile-icon.png" alt="Profile">
+      <span>Profile</span>
+    </a>
+  </div>
+</body>
+</html>

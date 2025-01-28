@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Task & Bottom Navigation</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 1px 20px seagreen;
+      text-align: left;
+      border: 2px solid transparent;
+      background-image: linear-gradient(#fff, #fff), 
+                        linear-gradient(to bottom right, #03FD01, #03FD01, #03FD01);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .Hi_2 {
+      color: deeppink;
+      font-weight: bold;
+    }
+
+    .Hi {
+      color: black;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .progress-container {
+      width: 100%;
+      background-color: #ddd;
+      border-radius: 10px;
+      height: 20px;
+      margin-top: 10px;
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background-color: #188754;
+      width: 0%;
+      border-radius: 10px;
+      transition: width 0.5s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      font-weight: bold;
+      color: black;
+      position: absolute;
+      top: 1px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #333;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .nav-item {
+      text-align: center;
+      color: white;
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .nav-item img {
+      width: 30px;
+      height: 30px;
+      display: block;
+      margin: 0 auto 5px;
+    }
+
+    .nav-item span {
+      font-size: 14px;
+    }
+
+    .nav-item:hover {
+      color: #f0a500;
+    }
+  </style>
+</head>
+<body>
+  <!-- Main Content -->
+  <div class="container">
+    <div class="Hi_2">
+      <h2>Today's Task</h2>
+    </div>
+    <div class="Hi">Total Tasks: 50</div>
+    <div class="Hi">
+        Remaining: <span id="remaining-ads">50</span>
+    </div>
+    <div class="Hi">
+        <p>Complete: <span id="watched-ads">0</span></p>
+        <p class="Hi">Earned Points: <span id="earned-points">0</span></p>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+      <p class="progress-text" id="progress-text">Loading 0%</p>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <a href="Home.html" class="nav-item">
+      <img src="home-icon.png" alt="Home">
+      <span>Home</span>
+    </a>
+    <a href="earn.html" class="nav-item">
+      <img src="earn-icon.png" alt="Earn">
+      <span>Earn</span>
+    </a>
+    <a href="withdraw.html" class="nav-item">
+      <img src="withdraw-icon.png" alt="Withdraw">
+      <span>Withdraw</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <img src="profile-icon.png" alt="Profile">
+      <span>Profile</span>
+    </a>
+  </div>
+
+  <script>
+    let dailyLimit = 50;
+    let watchedAdsCount = parseInt(localStorage.getItem('watchedAdsCount')) || 0;
+    let earnedPoints = parseFloat(localStorage.getItem('earnedPoints')) || 0;
+    let lastResetTime = localStorage.getItem('lastResetTime') || new Date().getTime();
+
+    function resetDailyLimit() {
+        const currentTime = new Date().getTime();
+        const oneDay = 24 * 60 * 60 * 1000;
+
+        if (currentTime - lastResetTime > oneDay) {
+            watchedAdsCount = 0;
+            earnedPoints = 0;
+            lastResetTime = currentTime;
+            localStorage.setItem('watchedAdsCount', watchedAdsCount);
+            localStorage.setItem('earnedPoints', earnedPoints.toFixed(2));
+            localStorage.setItem('lastResetTime', lastResetTime);
+        }
+    }
+
+    resetDailyLimit();
+
+    document.getElementById('watched-ads').textContent = watchedAdsCount;
+    document.getElementById('earned-points').textContent = earnedPoints.toFixed(2);
+    document.getElementById('remaining-ads').textContent = dailyLimit - watchedAdsCount;
+
+    function updateProgressBar() {
+        const progress = (watchedAdsCount / dailyLimit) * 100;
+        document.getElementById('progress-bar').style.width = progress + '%';
+        document.getElementById('progress-text').textContent = + progress.toFixed(0) + "% Complete";
+    }
+
+    function watchAd() {
+        if (watchedAdsCount < dailyLimit) {
+            watchedAdsCount++;
+            earnedPoints += 1000;
+            document.getElementById('watched-ads').textContent = watchedAdsCount;
+            document.getElementById('earned-points').textContent = earnedPoints.toFixed(2);
+            document.getElementById('remaining-ads').textContent = dailyLimit - watchedAdsCount;
+            updateProgressBar();
+            localStorage.setItem('watchedAdsCount', watchedAdsCount);
+            localStorage.setItem('earnedPoints', earnedPoints.toFixed(2));
+        } else {
+            alert("You have reached your daily limit of " + dailyLimit + " ads. Please try again tomorrow.");
+        }
+    }
+
+    updateProgressBar(); // Initial call to set progress on page load
+  </script>
+</body>
+</html>

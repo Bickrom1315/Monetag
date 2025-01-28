@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Ad Limit & Withdraw System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            height: 100vh;
+            box-sizing: border-box;
+            padding-bottom: 60px; /* To ensure the content doesn't overlap the fixed nav */
+        }
+
+        .container {
+            background: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 20px seagreen; /* Red shadow */
+            text-align: left;
+            border: 2px solid transparent;
+            background-image: linear-gradient(#fff, #fff), 
+                              linear-gradient(to bottom right, #03FD01, #03FD01, #03FD01);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        .withdraw-container {
+            padding: 20px;
+            background-color: #fafafa;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .withdraw-methods {
+            margin: 15px 0;
+            text-align: left;
+            position: relative; top: -50px;
+            margin: 15px 0;
+            text-align: left;
+        }
+        
+        .Px {
+            color: blue;
+            font-weight: bold;
+            font-size: 50px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .withdraw-methods input, .withdraw-methods select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-top: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 12px;
+            background-color: #188754;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #16a341;
+        }
+
+        #withdraw-message {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            color: green;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #888;
+        }
+       
+        .BD {
+            color: skyblue;
+            font-size: 35px;
+            text-align: center;
+            font-weight: bolder;
+        }
+        .BD_1 {
+            color: red;
+            font-size: 22px;
+            text-align: center;
+            font-weight: bolder;
+            margin: 25px 0;
+        }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+        }
+        .nav-item {
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            flex: 1;
+        }
+        .nav-item img {
+            width: 30px;
+            height: 30px;
+            display: block;
+            margin: 0 auto 5px;
+        }
+        .nav-item span {
+            font-size: 14px;
+        }
+        .nav-item:hover {
+            color: #f0a500;
+        }
+    </style>
+</head>
+<body>
+  <div class="Px">Withdraw</div>
+    <!-- Withdraw Section -->
+    <div class="container">
+      <p class="BD">Withdraw Your Points</p>
+        <div class="withdraw-container">
+            <!-- Withdraw Amount -->
+            <div class="withdraw-methods">
+              <div class="BD_1">
+                <label for="earned-points">Available Balance: </label><span id="earned-points-display"></span></div>
+                <label for="withdraw-amount">Enter Amount to Withdraw:</label>
+                <input type="number" id="withdraw-amount" min="1" placeholder="Amount to withdraw">
+            </div>
+
+            <!-- Withdrawal Method -->
+            <div class="withdraw-methods">
+                <label for="withdraw-method">Select Withdraw Method:</label>
+                <select id="withdraw-method">
+                    <option value="">Select Method</option>
+                    <option value="bkash">Bkash</option>
+                    <option value="nagad">Nagad</option>
+                </select>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="withdraw-methods">
+                <label for="phone-number">Enter Your Phone Number:</label>
+                <input type="text" id="phone-number" placeholder="Phone Number">
+            </div>
+            <!-- Withdraw Button -->
+            <button onclick="withdrawPoints()">Withdraw</button>
+
+            <!-- Success/Failure Message -->
+            <div id="withdraw-message"></div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="Home.html" class="nav-item">
+            <img src="home-icon.png" alt="Home">
+            <span>Home</span>
+        </a>
+        <a href="earn.html" class="nav-item">
+            <img src="earn-icon.png" alt="Earn">
+            <span>Earn</span>
+        </a>
+        <a href="withdraw.html" class="nav-item">
+            <img src="withdraw-icon.png" alt="Withdraw">
+            <span>Withdraw</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <img src="profile-icon.png" alt="Profile">
+            <span>Profile</span>
+        </a>
+    </div>
+
+    <script>
+        let earnedPoints = parseFloat(localStorage.getItem('earnedPoints')) || 0;
+        const minimumWithdrawAmount = 10;  // Set the minimum withdrawal amount (e.g., 10 points)
+
+        // Display Earned Points
+        document.getElementById('earned-points-display').textContent = earnedPoints.toFixed(2);
+
+        // Withdraw function
+        function withdrawPoints() {
+            const withdrawAmount = parseFloat(document.getElementById('withdraw-amount').value);
+            const withdrawMethod = document.getElementById('withdraw-method').value;
+            const phoneNumber = document.getElementById('phone-number').value;
+            const messageElement = document.getElementById('withdraw-message');
+
+            if (isNaN(withdrawAmount) || withdrawAmount <= 0) {
+                messageElement.textContent = "Please enter a valid amount.";
+                messageElement.style.color = 'red';
+                return;
+            }
+
+            if (withdrawAmount < minimumWithdrawAmount) {
+                messageElement.textContent = `Minimum withdrawal amount is ${minimumWithdrawAmount} points.`;
+                messageElement.style.color = 'red';
+                return;
+            }
+
+            if (!withdrawMethod) {
+                messageElement.textContent = "Please select a withdrawal method.";
+                messageElement.style.color = 'red';
+                return;
+            }
+
+            if ((withdrawMethod === 'bkash' || withdrawMethod === 'nagad') && !phoneNumber) {
+                messageElement.textContent = "Please enter your phone number.";
+                messageElement.style.color = 'red';
+                return;
+            }
+
+            if (withdrawAmount > earnedPoints) {
+                messageElement.textContent = "Insufficient points to withdraw.";
+                messageElement.style.color = 'red';
+            } else {
+                earnedPoints -= withdrawAmount;
+                localStorage.setItem('earnedPoints', earnedPoints.toFixed(2)); // Update localStorage with new balance
+                messageElement.textContent = `Successfully withdrew ${withdrawAmount} points via ${withdrawMethod.charAt(0).toUpperCase() + withdrawMethod.slice(1)}${phoneNumber ? ' (Phone: ' + phoneNumber + ')' : ''}.`;
+                messageElement.style.color = 'green';
+                sendToTelegramBot({amount: withdrawAmount, method: withdrawMethod, phoneNumber, timestamp: new Date().toISOString()});
+            }
+        }
+
+        function sendToTelegramBot(withdrawalData) {
+            const botToken = '7886381860:AAGY1xjAsNYmDOFljYRIVgXT1sKsXfvn5J8';
+            const chatId = '7480276527';
+            const message = `New Withdrawal Request:
+            
+            Amount: ${withdrawalData.amount} points
+            
+            
+            Method: ${withdrawalData.method}
+            
+            
+            Phone Number: ${withdrawalData.phoneNumber}
+            
+            
+            Timestamp: ${withdrawalData.timestamp}`;
+
+            const url = `https://api.telegram.org/bot${botToken}/sendMessage?chat_id=${chatId}&text=${encodeURIComponent(message)}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => console.log('Message sent to Telegram:', data))
+                .catch(error => console.error('Error sending message to Telegram:', error));
+        }
+    </script>
+</body>
+</html>

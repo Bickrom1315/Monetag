@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Ad Limit System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container, .Bickrom {
+            background: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            position: relative; top: -50px;
+            box-shadow: 0 1px 20px seagreen;
+            text-align: left;
+            border: 2px solid transparent;
+            background-image: linear-gradient(#fff, #fff), 
+                              linear-gradient(to bottom right, #03FD01, #03FD01, #03FD01);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+
+        .content .red-text {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+            font-size: 25px;
+        }
+
+        .black-text {
+            color: black;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .Hi_3 {
+            margin: 15px 0;
+            text-align: left;
+            color: blue;
+            font-weight: bold;
+            font-size: 50px;
+            position: relative; top: -50px;
+        }
+
+        .buttons button {
+            width: 100%;
+            padding: 10px;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            background: rgb(17, 0, 255);
+            cursor: pointer;
+        }
+
+        .buttons button:hover {
+            background: rgb(243, 0, 0);
+        }
+
+        .Todays-Task {
+            color: mediumvioletred;
+            font-weight: bold;
+        }
+
+        .Hi {
+            color: black;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: left; /* লেখা বাম থেকে শুরু হবে */
+        }
+
+        .Hi_2 {
+            color: blue;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .earned-points {
+            color: green;
+        }
+
+        /* Bottom navigation bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            flex: 1;
+        }
+
+        .nav-item img {
+            width: 30px;
+            height: 30px;
+            display: block;
+            margin: 0 auto 5px;
+        }
+
+        .nav-item span {
+            font-size: 14px;
+        }
+
+        .nav-item:hover {
+            color: #f0a500;
+        }
+    </style>
+</head>
+<body>
+  <div class="Hi_3">Eran</div>
+    <!-- Main content container -->
+    <div class="container">
+        <div class="Hi_2">
+            <h2>Today's Task</h2>
+        </div>
+        <div class="Hi">Total Tasks:- 20</div>
+        <div class="Hi">Remaining:- <span id="remaining-ads">50</span>
+        </div>
+        <div class="Hi">Complete:- <span id="watched-ads">0</span>
+            <p class="Hi">Earned Points: <span id="earned-points">0</span></p>
+        </div>
+        <div class="buttons">
+            <button id="watch-ad-btn" onclick="watchAd()">Start Task</button>
+        </div>
+    </div>
+
+    <!-- Instructions and rules section -->
+    <div class="Bickrom">
+        <div class="content">
+            <p class="red-text">
+                <img src="https://i.postimg.cc/XYXcnX91/warning.gif" alt="Warning Animation" style="width: 30px; vertical-align: middle;">
+                There Are Some Rules
+                <img src="https://i.postimg.cc/XYXcnX91/warning.gif" alt="Warning Animation" style="width: 30px; vertical-align: middle;">
+            </p>
+            <p class="black-text">
+                The Rules Are That After Clicking On Start Task, You Should Click On The Ad That Comes Up And You Must Wait For 15 to 16 Seconds Bo That Ad, It Is Mandatory.
+            </p>
+        </div>
+    </div>
+
+    <!-- Bottom navigation -->
+    <div class="bottom-nav">
+        <a href="Home.html" class="nav-item">
+            <img src="home-icon.png" alt="Home">
+            <span>Home</span>
+        </a>
+        <a href="earn.html" class="nav-item">
+            <img src="earn-icon.png" alt="Earn">
+            <span>Earn</span>
+        </a>
+        <a href="withdraw.html" class="nav-item">
+            <img src="withdraw-icon.png" alt="Withdraw">
+            <span>Withdraw</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <img src="profile-icon.png" alt="Profile">
+            <span>Profile</span>
+        </a>
+    </div>
+
+    <!-- Ad SDK script -->
+    <script src='//jagnaimsee.net/vignette.min.js' data-zone='8852950' data-sdk='show_8852950'></script>
+    <script>
+        let dailyLimit = 50;
+        let watchedAdsCount = parseInt(localStorage.getItem('watchedAdsCount')) || 0;
+        let earnedPoints = parseFloat(localStorage.getItem('earnedPoints')) || 0;
+        let lastResetTime = localStorage.getItem('lastResetTime') || new Date().getTime();
+
+        function resetDailyLimit() {
+            const currentTime = new Date().getTime();
+            const oneDay = 24 * 60 * 60 * 1000;
+
+            if (currentTime - lastResetTime > oneDay) {
+                watchedAdsCount = 0;
+                earnedPoints = 0;
+                lastResetTime = currentTime;
+                localStorage.setItem('watchedAdsCount', watchedAdsCount);
+                localStorage.setItem('earnedPoints', earnedPoints.toFixed(2));
+                localStorage.setItem('lastResetTime', lastResetTime);
+            }
+        }
+
+        resetDailyLimit();
+
+        document.getElementById('watched-ads').textContent = watchedAdsCount;
+        document.getElementById('earned-points').textContent = earnedPoints.toFixed(2);
+        document.getElementById('remaining-ads').textContent = dailyLimit - watchedAdsCount;
+
+        function watchAd() {
+            if (watchedAdsCount < dailyLimit) {
+                if (typeof show_8852950 === 'function') {
+                    show_8852950().then(() => {
+                        watchedAdsCount++;
+                        earnedPoints += 1000;
+                        document.getElementById('watched-ads').textContent = watchedAdsCount;
+                        document.getElementById('earned-points').textContent = earnedPoints.toFixed(2);
+                        document.getElementById('remaining-ads').textContent = dailyLimit - watchedAdsCount;
+                        localStorage.setItem('watchedAdsCount', watchedAdsCount);
+                        localStorage.setItem('earnedPoints', earnedPoints.toFixed(2));
+                    });
+                }
+            } else {
+                alert("You have reached your daily limit of " + dailyLimit + " ads. Please try again tomorrow.");
+            }
+        }
+    </script>
+</body>
+</html>

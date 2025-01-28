@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fixed Bottom Buttons</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script> <!-- Telegram Web Apps SDK -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      padding-bottom: 60px; /* Bottom nav এর জন্য স্পেস */
+    }
+
+    .content {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .user-info {
+      margin-bottom: 20px;
+    }
+
+    .user-info img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%; /* ছবিকে গোলাকার করতে */
+      display: block;
+      margin: 0 auto 10px;
+    }
+
+    .user-info h3 {
+      font-size: 18px;
+      margin: 0;
+      color: #333;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #333;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .nav-item {
+      text-align: center;
+      color: white;
+      text-decoration: none;
+      flex: 1;
+    }
+
+    .nav-item img {
+      width: 30px;
+      height: 30px;
+      display: block;
+      margin: 0 auto 5px;
+    }
+
+    .nav-item span {
+      font-size: 14px;
+    }
+
+    .nav-item:hover {
+      color: #f0a500;
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <div class="user-info" id="user-info">
+      <!-- User information dynamically populate হবে -->
+    </div>
+  </div>
+
+  <div class="bottom-nav">
+    <a href="Home.html" class="nav-item">
+      <img src="home-icon.png" alt="Home">
+      <span>Home</span>
+    </a>
+    <a href="earn.html" class="nav-item">
+      <img src="earn-icon.png" alt="Earn">
+      <span>Earn</span>
+    </a>
+    <a href="withdraw.html" class="nav-item">
+      <img src="withdraw-icon.png" alt="Withdraw">
+      <span>Withdraw</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <img src="profile-icon.png" alt="Profile">
+      <span>Profile</span>
+    </a>
+  </div>
+
+  <script>
+    // Telegram Web Apps SDK initialization
+    const tg = window.Telegram.WebApp;
+
+    // Check if Telegram WebApp SDK is loaded and initDataUnsafe is available
+    if (tg.initDataUnsafe) {
+      const user = tg.initDataUnsafe.user;
+
+      if (user) {
+        const userInfoDiv = document.getElementById('user-info');
+        userInfoDiv.innerHTML = `
+          <img src="${user.photo_url || 'default-profile.png'}" alt="User Photo">
+          <h3>${user.first_name} ${user.last_name || ''}</h3>
+        `;
+      } else {
+        console.error("User information not available.");
+      }
+    } else {
+      console.error("Telegram WebApp SDK not loaded correctly.");
+    }
+  </script>
+</body>
+</html>
